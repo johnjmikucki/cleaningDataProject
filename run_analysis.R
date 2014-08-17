@@ -16,8 +16,46 @@ cleanColumnNames = function(dir) {
   n$V2
 }
 
-loadMeasurements = function(dir="UCI HAR Dataset") {
+cleanActMap  = function(dir) {
+  # load file
+  actmap = data.table(read.table(paste0(dir,"/activity_labels.txt")))
+  # handles
+  colnames(actmap) = cbind("id","name")
+  # set to lowercase and remove underscores
+  actmap$name = tolower(actmap$name)
+  actmap$name = gsub("_","",actmap$name)
   
+  #return both the levels and the names; we'll 
+  actmap$name
+}
+
+loadDataset = function(dir,name, varnames, actmap) {
+  
+  # compute filenames
+  # "X" data
+  xfn = paste0(dir,"/",name,"/X_",name, ".txt")
+  # "Y" data
+  yfn = paste0(dir,"/",name,"/y_",name, ".txt")
+  
+  # subject info
+  sfn = paste0(dir,"/",name,"/subject_",name,".txt")
+  
+  # load variable values, associate with column names
+  data = data.table(read.table(xfn, header = FALSE, col.names = varnames))
+  subj = data.table(subject=read.table(sfn))
+  data$subject = subj
+  
+  actions = data.table(action=read.table(yfn))
+    
+  # treat action like a factor so it displays the names nicely
+  data$action = as.factor(x= actions$action.V1)
+  levels(data$action)  = actmap$name
+
+  #return the loaded dataset
+  data
+}
+
+loadMeasurements = function(dir="UCI HAR Dataset") {  
 #  - 'features.txt': List of all features.
 #  - 'activity_labels.txt': Links the class labels with their activity name.
 #  - 'train/X_train.txt': Training set.
@@ -25,65 +63,44 @@ loadMeasurements = function(dir="UCI HAR Dataset") {
 #  - 'test/X_test.txt': Test set.
 #  - 'test/y_test.txt': Test labels.
   
-  actmap = data.table(read.table(paste0(dir,"/activity_labels.txt")))
-  colnames(actmap) = cbind("id","name")
-  actmap$name = tolower(actmap$name)
-  
+  actnames = cleanActMap(dir)
   varnames = cleanColumnNames(dir)
   
-  # load variable values, associate with column names
-  train =data.table(read.table(file = paste0(dir,"/train/X_train.txt"), header = FALSE, col.names = varnames))
-  subj = data.table(subject=read.table(file = paste0(dir,"/train/subject_train.txt")))
- # colnames(subj) = "subject"
-  train$subject =subj
+  train = loadDataset(dir, "train", varnames, actmap)
   
-  actions = data.table(action=read.table(file = paste0(dir,"/train/y_train.txt")))
-  #  @colnames(actions) = "action"
-  #train[, action:= actions]
-  #train$action = factor(train$action)
-
-  train$action = factor(actions)
-  levels(train$action) = actmap$name
-  #  train[, actDesc :=actmap[actionID]]
+  test = loadDataset(dir, "test", varnames, actmap)
   
-  # load variable values, associate with column names
-  test = data.table(read.table(file = paste0(dir,"/test/X_test.txt"), header = FALSE, col.names = varnames))
-  subj = data.table(read.table(file = paste0(dir,"/test/subject_test.txt")))
-  colnames(subj) = "subject"
-  test[,subject := subj]
-  
-  actions = data.table(read.table(file = paste0(dir,"/test/y_test.txt")))
-  colnames(actions) = "action"
-  test[, action:= actions]
-  test$action = factor(test$action)
-  levels(test$action) = actmap$name
-#  test[, actionID:= actions]
-#  test[, actDesc :=actmap[actionID]]
-  
+  #return
   all = rbind(train,test) 
 }
 
 extractMeanAndStddev = function(data) {
-  selection1 = grep(pattern = "*mean()|*std()", colnames(all))
-  selection2 = grep(pattern = "subject|action", colnames(all))
+  # this requirement is a bit underspecified, so I'm taking the strictest interpretation
+  # pull out the name, activity, and  'computed' means and standard deviations
+  selection = grep(pattern = "subject|action|*mean()|*std()", colnames(data))
   
-  result = data[c(selection1, selection2)]
+  result = data[selection]
   result
 }
+
 computeGroupMeans = function(data) {
+  # reorder by subject and action
   meltdata = melt(data, id.vars = c('subject','action'))
+  # compute mean, grouping by subject and action (in that order)
   extracted = dcast(meltdata,subject+action ~ variable,mean)
 }
 
 doit = function() {
-  
   # 1. Merges the training and the test sets to create one data set.
   # to get this dataset, run:
   data = loadMeasurements()
+  print(head(data))
   
   # 2. Extracts only the measurements on the mean and standard deviation for each measurement. 
   # To extract these, run:
   extracts = extractMeanAndStddev(data)
+  print(head(extracts))
+  
   
   # 3. Uses descriptive activity names to name the activities in the data set
   # we do this during the load phase
@@ -93,6 +110,7 @@ doit = function() {
   
   # 5. Creates a second, independent tidy data set with the average of each variable for each activity and each subject. 
   means = computeGroupMeans(data)
+  print(head(means))
   
   # 6. Package tidy data set created in step 5 of the instructions. 
   # Please upload your data set as a txt file created with
