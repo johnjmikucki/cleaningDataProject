@@ -25,7 +25,7 @@ cleanActMap  = function(dir) {
   actmap$name = tolower(actmap$name)
   actmap$name = gsub("_","",actmap$name)
   
-  #return both the levels and the names; we'll 
+  #return just the names
   actmap$name
 }
 
@@ -36,20 +36,19 @@ loadDataset = function(dir,name, varnames, actmap) {
   xfn = paste0(dir,"/",name,"/X_",name, ".txt")
   # "Y" data
   yfn = paste0(dir,"/",name,"/y_",name, ".txt")
-  
   # subject info
   sfn = paste0(dir,"/",name,"/subject_",name,".txt")
   
-  # load variable values, associate with column names
+  # load data, associate with column names and the subject being measured.
   data = data.table(read.table(xfn, header = FALSE, col.names = varnames))
   subj = data.table(subject=read.table(sfn))
   data$subject = subj
   
-  actions = data.table(action=read.table(yfn))
-    
-  # treat action like a factor so it displays the names nicely
-  data$action = as.factor(x= actions$action.V1)
-  levels(data$action)  = actmap$name
+  # load activities, associate with measurements
+  # treat activity like a factor so it displays the names nicely  
+  activities = data.table(activity=read.table(yfn))  
+  data$activity = as.factor(x= activities$activity.V1)
+  levels(data$activity)  = actmap$name
 
   #return the loaded dataset
   data
@@ -63,59 +62,62 @@ loadMeasurements = function(dir="UCI HAR Dataset") {
 #  - 'test/X_test.txt': Test set.
 #  - 'test/y_test.txt': Test labels.
   
+  # fetch cleaned activity/name mappings
   actnames = cleanActMap(dir)
+  
+  # fetch cleaned measurement names(col names)
   varnames = cleanColumnNames(dir)
   
+  # load training exemplars
   train = loadDataset(dir, "train", varnames, actmap)
   
+  # load test examplars
   test = loadDataset(dir, "test", varnames, actmap)
   
-  #return
+  #catenate and return complete dataset
   all = rbind(train,test) 
 }
 
 extractMeanAndStddev = function(data) {
   # this requirement is a bit underspecified, so I'm taking the loosest interpretation
-  # pull out the name, activity, and  'computed' means and standard deviations
-  selection = grep(pattern = "subject|action|*mean*|*std*", colnames(data))
+  # pull out the name, activity, and anything with means or standard deviation in the measurement name
+  selection = grep(pattern = "subject|activity|*mean*|*std*", colnames(data))
   
   result = subset(data,TRUE,selection)
   result
 }
 
 computeGroupMeans = function(data) {
-  # reorder by subject and action
-  meltdata = melt(data, id.vars = c('subject','action'))
-  # compute mean, grouping by subject and action (in that order)
-  extracted = dcast(meltdata,subject+action ~ variable,mean)
+  # reshape by subject and activity
+  meltdata = melt(data, id.vars = c('subject','activity'))
+  # compute mean, grouping by subject and activity (in that order)
+  extracted = dcast(meltdata,subject+activity ~ variable,mean)
 }
 
 doit = function() {
   # 1. Merges the training and the test sets to create one data set.
   # to get this dataset, run:
   data = loadMeasurements()
-  print(dim(data))
+ # print(dim(data))
   
   # 2. Extracts only the measurements on the mean and standard deviation for each measurement. 
   # To extract these, run:
   extracts = extractMeanAndStddev(data)
-  print(dim(extracts))
+ #print(dim(extracts))
   
   
   # 3. Uses descriptive activity names to name the activities in the data set
-  # we do this during the load phase
+  # we map these on during the load phase
   
   # 4. Appropriately labels the data set with descriptive variable names. 
-  # we do this during the load phase
+  # we map these on during the load phase
   
   # 5. Creates a second, independent tidy data set with the average of each variable for each activity and each subject.
   means = computeGroupMeans(data)
   print(means)
   
   # 6. Package tidy data set created in step 5 of the instructions. 
-  # Please upload your data set as a txt file created with
-  # write.table() using row.name=FALSE 
-  # (do not cut and paste a dataset directly into the text box, as this may cause errors saving your submission).
+  # Please upload your data set as a txt file created with write.table() using row.name=FALSE 
   write.table(means,row.names=FALSE, file = "extractedgroupmeans.txt")
   
 }
