@@ -10,8 +10,8 @@ cleanColumnNames = function(dir) {
   n = data.table(read.table(paste0(dir,"/features.txt")))
   #normalize variable names -- lower case, minimize troublesome punctuation marks.
   n$V2 = tolower(n$V2)
-  n$v2 = gsub("\\(|\\)", "", perl = TRUE, x=n$V2)
-  n$v2 = gsub(",","_", x=n$v2)
+  n$V2 = gsub("\\(|\\)", "", perl = TRUE, x=n$V2)
+  n$V2 = gsub(",","_", x=n$V2)
   
   n$V2
 }
