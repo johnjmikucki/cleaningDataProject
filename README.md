@@ -25,7 +25,10 @@ Fields in this table closely follow those in the original data dictionary (featu
 * Field 1: "subject".  This numeric field contains the counting-number ID given to each subject in the original study.  Drawn from subject_test.txt
 * Field 2: "activity".  This character field contains the text label associated with the measured activity.  The labels are drawn from activity_labels.txt, and the activity ID itself is drawn from the "y_" datasets.
 
-The other values in each row are the mean of the individual measurements, grouped by fields 1 and 2 described above.  In case you have difficulty identifying the original field name, the explicit mappings are listed here:
+The other values in each row are the <strong>mean</strong> of the named measurements grouped by fields 1 and 2 described above.  
+To strike a balance between usability and transparency, I've chosen to remove parens, replace commas, and <strong>not add the word 'mean' to every variable name in the table</strong>.  
+
+For reference, the original and cleaned variable names are listed here:
 
 <pre>
 "original" "cleaned"
