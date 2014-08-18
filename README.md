@@ -1,32 +1,33 @@
-readme.MD
+README.md
 
-* run_analysis.R performs the following primary steps:
-** ETL for primary dataset
-*** Loads both the training and test partitions of the dataset
-*** Associates activity names and observed subject ID to each case in the dataset
-*** Loads provided feature names, squashing problematic characters like parentheses and commas.
-*** Labels observed variables with clean feature names
-** Computes table of means for each (subject,activity) tuple in primary dataset
-** Outputs means table to screen and "extractedGroupMeans.txt"
+# BLUF
+install.packages(data.table); install.packages(reshape2);
+doit(); 
+
+# Analytic Description
+
+run_analysis.R performs the following primary steps
+* ETL for primary dataset
+ * Loads both the training and test partitions of the dataset
+ * Associates activity names and observed subject ID to each case in the dataset
+ * Loads provided feature names, squashing problematic characters like parentheses and commas.
+ * Labels observed variables with clean feature names
+* Computes table of means for each (subject,activity) tuple in primary dataset
+* Outputs means table to screen and "extractedGroupMeans.txt"
 
 To reperform the analysis, extract the contents of
-https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip
-into the working directory.  This will create a "UCI HAR Dataset" directory at the same level as the run_analysis.R script.
+[https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip] into the working directory.  This will create a "UCI HAR Dataset" directory at the same level as the run_analysis.R script.
 
-You may then load the script in R and run doit()
-Note: you may need to run:
-install.packages(data.table); install.packages(reshape2)
-to install needed libraries prior to running doit() 
-
-CODE BOOK:  Interpreting the Means Table (extractedGroupMeans.txt)
+# CODE BOOK:  Interpreting the Means Table (extractedGroupMeans.txt)
 
 Fields in this table closely follow those in the original data dictionary (features.txt, features_info.txt) with two additions:
 
-Field 1: "subject".  This numeric field contains the counting-number ID given to each subject in the original study.  Drawn from subject_test.txt
-Field 2: "activity".  This character field contains the text label associated with the measured activity.  The labels are drawn from activity_labels.txt, and the activity ID itself is drawn from the "y_" datasets.
+* Field 1: "subject".  This numeric field contains the counting-number ID given to each subject in the original study.  Drawn from subject_test.txt
+* Field 2: "activity".  This character field contains the text label associated with the measured activity.  The labels are drawn from activity_labels.txt, and the activity ID itself is drawn from the "y_" datasets.
 
 The other values in each row are the mean of the individual measurements, grouped by fields 1 and 2 described above.  In case you have difficulty identifying the original field name, the explicit mappings are listed here:
 
+<pre>
 "original" "cleaned"
 "1" "tBodyAcc-mean()-X" "tbodyacc-mean-x"
 "2" "tBodyAcc-mean()-Y" "tbodyacc-mean-y"
@@ -589,5 +590,5 @@ The other values in each row are the mean of the individual measurements, groupe
 "559" "angle(X,gravityMean)" "anglex_gravitymean"
 "560" "angle(Y,gravityMean)" "angley_gravitymean"
 "561" "angle(Z,gravityMean)" "anglez_gravitymean"
-
+</pre>
 
