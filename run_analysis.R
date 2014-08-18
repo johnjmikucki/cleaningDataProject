@@ -75,11 +75,11 @@ loadMeasurements = function(dir="UCI HAR Dataset") {
 }
 
 extractMeanAndStddev = function(data) {
-  # this requirement is a bit underspecified, so I'm taking the strictest interpretation
+  # this requirement is a bit underspecified, so I'm taking the loosest interpretation
   # pull out the name, activity, and  'computed' means and standard deviations
-  selection = grep(pattern = "subject|action|*mean()|*std()", colnames(data))
+  selection = grep(pattern = "subject|action|*mean*|*std*", colnames(data))
   
-  result = data[selection]
+  result = subset(data,TRUE,selection)
   result
 }
 
@@ -94,12 +94,12 @@ doit = function() {
   # 1. Merges the training and the test sets to create one data set.
   # to get this dataset, run:
   data = loadMeasurements()
-  print(head(data))
+  print(dim(data))
   
   # 2. Extracts only the measurements on the mean and standard deviation for each measurement. 
   # To extract these, run:
   extracts = extractMeanAndStddev(data)
-  print(head(extracts))
+  print(dim(extracts))
   
   
   # 3. Uses descriptive activity names to name the activities in the data set
@@ -108,14 +108,14 @@ doit = function() {
   # 4. Appropriately labels the data set with descriptive variable names. 
   # we do this during the load phase
   
-  # 5. Creates a second, independent tidy data set with the average of each variable for each activity and each subject. 
+  # 5. Creates a second, independent tidy data set with the average of each variable for each activity and each subject.
   means = computeGroupMeans(data)
-  print(head(means))
+  print(means)
   
   # 6. Package tidy data set created in step 5 of the instructions. 
   # Please upload your data set as a txt file created with
   # write.table() using row.name=FALSE 
   # (do not cut and paste a dataset directly into the text box, as this may cause errors saving your submission).
-  write.table(means,row.names=FALSE, file = "extractedgroupmeans.dat")
+  write.table(means,row.names=FALSE, file = "extractedgroupmeans.txt")
   
 }
