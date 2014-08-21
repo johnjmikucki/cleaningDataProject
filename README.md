@@ -23,10 +23,45 @@ To reperform the analysis, extract the contents of
 Fields in this table closely follow those in the original data dictionary (features.txt, features_info.txt) with two additions:
 
 * Field 1: "subject".  This numeric field contains the counting-number ID given to each subject in the original study.  Drawn from subject_test.txt
-* Field 2: "activity".  This character field contains the text label associated with the measured activity.  The labels are drawn from activity_labels.txt, and the activity ID itself is drawn from the "y_" datasets.
+* Field 2: "activity".  This character field contains the text label associated with the measured activity.  The labels are drawn from activity_labels.txt, and the activity ID itself is drawn from the "y_" datasets.  Only feature names containing the strings 'mean' and 'std' are included.
 
 The other values in each row are the <strong>mean</strong> of the named measurements grouped by fields 1 and 2 described above.  
 To strike a balance between usability and transparency, I've chosen to remove parens, replace commas, and <strong>not add the word 'mean' to every variable name in the table</strong>.  
+
+The extracted group mean fields are:
+<pre>
+ [1] "subject"                            "activity"                           "tbodyacc.mean.x"                   
+ [4] "tbodyacc.mean.y"                    "tbodyacc.mean.z"                    "tbodyacc.std.x"                    
+ [7] "tbodyacc.std.y"                     "tbodyacc.std.z"                     "tgravityacc.mean.x"                
+[10] "tgravityacc.mean.y"                 "tgravityacc.mean.z"                 "tgravityacc.std.x"                 
+[13] "tgravityacc.std.y"                  "tgravityacc.std.z"                  "tbodyaccjerk.mean.x"               
+[16] "tbodyaccjerk.mean.y"                "tbodyaccjerk.mean.z"                "tbodyaccjerk.std.x"                
+[19] "tbodyaccjerk.std.y"                 "tbodyaccjerk.std.z"                 "tbodygyro.mean.x"                  
+[22] "tbodygyro.mean.y"                   "tbodygyro.mean.z"                   "tbodygyro.std.x"                   
+[25] "tbodygyro.std.y"                    "tbodygyro.std.z"                    "tbodygyrojerk.mean.x"              
+[28] "tbodygyrojerk.mean.y"               "tbodygyrojerk.mean.z"               "tbodygyrojerk.std.x"               
+[31] "tbodygyrojerk.std.y"                "tbodygyrojerk.std.z"                "tbodyaccmag.mean"                  
+[34] "tbodyaccmag.std"                    "tgravityaccmag.mean"                "tgravityaccmag.std"                
+[37] "tbodyaccjerkmag.mean"               "tbodyaccjerkmag.std"                "tbodygyromag.mean"                 
+[40] "tbodygyromag.std"                   "tbodygyrojerkmag.mean"              "tbodygyrojerkmag.std"              
+[43] "fbodyacc.mean.x"                    "fbodyacc.mean.y"                    "fbodyacc.mean.z"                   
+[46] "fbodyacc.std.x"                     "fbodyacc.std.y"                     "fbodyacc.std.z"                    
+[49] "fbodyacc.meanfreq.x"                "fbodyacc.meanfreq.y"                "fbodyacc.meanfreq.z"               
+[52] "fbodyaccjerk.mean.x"                "fbodyaccjerk.mean.y"                "fbodyaccjerk.mean.z"               
+[55] "fbodyaccjerk.std.x"                 "fbodyaccjerk.std.y"                 "fbodyaccjerk.std.z"                
+[58] "fbodyaccjerk.meanfreq.x"            "fbodyaccjerk.meanfreq.y"            "fbodyaccjerk.meanfreq.z"           
+[61] "fbodygyro.mean.x"                   "fbodygyro.mean.y"                   "fbodygyro.mean.z"                  
+[64] "fbodygyro.std.x"                    "fbodygyro.std.y"                    "fbodygyro.std.z"                   
+[67] "fbodygyro.meanfreq.x"               "fbodygyro.meanfreq.y"               "fbodygyro.meanfreq.z"              
+[70] "fbodyaccmag.mean"                   "fbodyaccmag.std"                    "fbodyaccmag.meanfreq"              
+[73] "fbodybodyaccjerkmag.mean"           "fbodybodyaccjerkmag.std"            "fbodybodyaccjerkmag.meanfreq"      
+[76] "fbodybodygyromag.mean"              "fbodybodygyromag.std"               "fbodybodygyromag.meanfreq"         
+[79] "fbodybodygyrojerkmag.mean"          "fbodybodygyrojerkmag.std"           "fbodybodygyrojerkmag.meanfreq"     
+[82] "angletbodyaccmean_gravity"          "angletbodyaccjerkmean_gravitymean"  "angletbodygyromean_gravitymean"    
+[85] "angletbodygyrojerkmean_gravitymean" "anglex_gravitymean"                 "angley_gravitymean"                
+[88] "anglez_gravitymean"                
+
+</pre>
 
 For reference, the original and cleaned variable names are listed here:
 
