@@ -20,6 +20,13 @@ To reperform the analysis, extract the contents of
 
 # CODE BOOK:  Interpreting the Means Table (extractedGroupMeans.txt)
 
+This data is considered 'tidy':
+
+1. Each variable forms a column.  (The subset of variables containing 'mean' or 'std' in their name in the original dataset)
+2. Each observation forms a row.  (The observed means of the selected variables performed by 'subject' doing 'activity')
+3. Each type of observational unit forms a table. (No other variables/data are found in the table.)
+
+
 Fields in this table closely follow those in the original data dictionary (features.txt, features_info.txt) with two additions:
 
 * Field 1: "subject".  This numeric field contains the counting-number ID given to each subject in the original study.  Drawn from subject_test.txt
@@ -28,7 +35,7 @@ Fields in this table closely follow those in the original data dictionary (featu
 The other values in each row are the <strong>mean</strong> of the named measurements grouped by fields 1 and 2 described above.  
 To strike a balance between usability and transparency, I've chosen to remove parens, replace commas, and <strong>not add the word 'mean' to every variable name in the table</strong>.  
 
-The extracted group mean fields are:
+The extracted group mean/std fields are:
 <pre>
  [1] "subject"                            "activity"                           "tbodyacc.mean.x"                   
  [4] "tbodyacc.mean.y"                    "tbodyacc.mean.z"                    "tbodyacc.std.x"                    
