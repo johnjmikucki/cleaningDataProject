@@ -48,13 +48,13 @@ loadDataset = function(dir,name, varnames, actmap) {
   # treat activity like a factor so it displays the names nicely  
   activities = data.table(activity=read.table(yfn))  
   data$activity = as.factor(x= activities$activity.V1)
-  levels(data$activity)  = actmap$name
+  levels(data$activity)  = actmap #$name
 
   #return the loaded dataset
   data
 }
 
-loadMeasurements = function(dir="UCI HAR Dataset") {  
+loadMeasurements = function(dir=".") {  
 #  - 'features.txt': List of all features.
 #  - 'activity_labels.txt': Links the class labels with their activity name.
 #  - 'train/X_train.txt': Training set.
@@ -69,10 +69,10 @@ loadMeasurements = function(dir="UCI HAR Dataset") {
   varnames = cleanColumnNames(dir)
   
   # load training exemplars
-  train = loadDataset(dir, "train", varnames, actmap)
+  train = loadDataset(dir, "train", varnames, actnames)
   
   # load test examplars
-  test = loadDataset(dir, "test", varnames, actmap)
+  test = loadDataset(dir, "test", varnames, actnames)
   
   #catenate and return complete dataset
   all = rbind(train,test) 
@@ -112,8 +112,9 @@ doit = function() {
   # 4. Appropriately labels the data set with descriptive variable names. 
   # we map these on during the load phase
   
-  # 5. Creates a second, independent tidy data set with the average of each variable for each activity and each subject.
-  means = computeGroupMeans(data)
+  # 5. Creates a second, independent tidy data set with the average of each extracted mean and sttdev.  
+  # This doesn't seem particularly useful to me - I'd like to call the customer...
+  means = computeGroupMeans(extracts)
   print(means)
   
   # 6. Package tidy data set created in step 5 of the instructions. 
